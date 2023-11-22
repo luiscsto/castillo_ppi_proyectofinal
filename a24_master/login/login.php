@@ -1,3 +1,4 @@
+<?php include('server.php') ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,31 +33,31 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
-				<form class="login100-form validate-form">
+				<form class="login100-form validate-form" method="post" action="login.php">
+				<?php include('errors.php'); ?>
 					<span class="login100-form-title p-b-26">
 						Bienvenidx
 					</span>
 					<span class="login100-form-title p-b-48">
 						<i class="zmdi zmdi-account-circle"></i>
 					</span>
-
-					<div class="wrap-input100 validate-input" data-validate = "Valid email is: a@b.c">
-						<input class="input100" type="text" name="email">
+					<div class="wrap-input100 validate-input" data-validate = "Un email valido es: a@b.c">
+						<input class="input100" type="text" name="correo">
 						<span class="focus-input100" data-placeholder="Email"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input" data-validate="Enter password">
+					<div class="wrap-input100 validate-input" data-validate="Ingresa una contraseña">
 						<span class="btn-show-pass">
 							<i class="zmdi zmdi-eye"></i>
 						</span>
-						<input class="input100" type="password" name="pass">
-						<span class="focus-input100" data-placeholder="Password"></span>
+						<input class="input100" type="password" name="contrasena">
+						<span class="focus-input100" data-placeholder="Contraseña"></span>
 					</div>
 
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn">
+							<button class="login100-form-btn" type="submit" name="login_user">
 								Iniciar sesión
 							</button>
 						</div>
@@ -69,6 +70,14 @@
 
 						<a class="txt2" href="register.php">
 							Regístrate
+						</a>
+						<br>
+						<a class="txt2" href="../index.php">
+							Regresar al Inicio
+						</a>
+						<br>
+						<a class="txt2" href="sesiones.php">
+							Pagina de sesiones
 						</a>
 					</div>
 				</form>

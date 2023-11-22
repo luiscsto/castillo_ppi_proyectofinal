@@ -91,6 +91,10 @@
 						<a class="txt2" href="signup.php">
 							Inicia sesion
 						</a>
+						<br>
+						<a class="txt2" href="../index.php">
+							Regresar al Inicio
+						</a>
 					</div>
 				</form>
 			</div>

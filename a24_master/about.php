@@ -1,3 +1,15 @@
+<?php 
+  session_start(); 
+  if (!isset($_SESSION['u_nombre'])) {
+	$_SESSION['msg'] = "Tienes que iniciar sesion primero";
+/*         header('location: sesiones.php');
+*/  }
+if (isset($_GET['logout'])) {
+	session_destroy();
+	unset($_SESSION['u_nombre']);
+/*         header("location: sesiones.php");
+*/  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -44,6 +44,6 @@
         <p> <a href="sesiones.php?logout='1'" style="color: red;">logout</a> </p>
     <?php endif ?>
 </div>
-                
+      <a href="../index.php">Regresar a inicio</a>          
 </body>
 </html>

@@ -88,7 +88,7 @@
 							¿Ya tienes cuenta?
 						</span>
 
-						<a class="txt2" href="signup.php">
+						<a class="txt2" href="login.php">
 							Inicia sesion
 						</a>
 						<br>

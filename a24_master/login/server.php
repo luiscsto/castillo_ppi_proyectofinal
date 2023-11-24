@@ -32,7 +32,7 @@ if(!empty($_POST['nombre']) && !empty($_POST['correo']) && !empty($_POST['nacimi
     $numrows=mysqli_num_rows($query);  
     if($numrows==0)  
     {  
-        $sql="INSERT INTO usuario (u_nombre, correo, contrasena, tarjeta, direccion, nacimiento) VALUES('$nombre','$correo','$contrasena','$tarjeta','$direccion','$nacimiento');";  
+        $sql="INSERT INTO usuario (u_nombre, correo, contrasena, tarjeta, direccion, nacimiento) VALUES('$u_nombre','$correo','$contrasena','$tarjeta','$direccion','$nacimiento');";  
     
         $result=mysqli_query($con,$sql);  
             if($result){  
@@ -73,10 +73,14 @@ if (isset($_POST['login_user'])) {
           if (mysqli_num_rows($result) == 1) {
             $_SESSION['id_usuario'] = $row[0];
             $_SESSION['u_nombre'] = $row[1];
-            $_SESSION['correo'] = $correo;
+            $_SESSION['correo'] = $row[2];
+            $_SESSION['contrasena'] = $row[3];
             $_SESSION['tarjeta'] = $row[4];
+            $_SESSION['direccion'] = $row[5];
+            $_SESSION['nacimiento'] = $row[6];
             $_SESSION['success'] = "¡Inicio de sesion exitoso!";
-            header('location: sesiones.php');
+            $_SESSION['linkusuario'] = "usuario.php";
+            header('location: ../usuario.php');
           }else {
                   array_push($errors, "Verifique sus datos de acceso");
           }

@@ -1,5 +1,13 @@
-<?php
-session_start();
+<?php 
+  session_start(); 
+  if (!isset($_SESSION['u_nombre'])) {
+        $_SESSION['msg'] = "Tienes que iniciar sesion primero";
+		$_SESSION['linkusuario']="login/login.php";
+  }
+  if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['u_nombre']);
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,9 +83,15 @@ session_start();
 						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</div>
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-							<i class="zmdi zmdi-account-circle"></i>
-						</div>
+						<?php  if (isset($_SESSION['u_nombre'])) : ?>
+							<a href="usuario.php">
+								<?php else :?>
+							<a href="login/login.php">
+								<?php endif ?>
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+									<i class="zmdi zmdi-account-circle"></i>
+								</div>
+							</a>
 					</div>
 				</nav>
 			</div>	
@@ -95,9 +109,15 @@ session_start();
 				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</div>
-				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-					<i class="zmdi zmdi-account-circle"></i>
-				</div>
+						<?php  if (isset($_SESSION['u_nombre'])) : ?>
+					<a href="usuario.php">
+						<?php else :?>
+					<a href="login/login.php">
+						<?php endif ?>
+							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+								<i class="zmdi zmdi-account-circle"></i>
+							</div>
+					</a>
 			</div>
 
 			<!-- Button show menu -->
@@ -323,7 +343,7 @@ echo "<div class=\"container\">
 									</div>
 
 									<button class=\"flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail\">
-										Add to cart
+										Añadir al carrito
 									</button>
 								</div>
 							</div>	
@@ -340,11 +360,11 @@ echo "<div class=\"container\">
 
 		<div class=\"bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15\">
 			<span class=\"stext-107 cl6 p-lr-25\">
-				SKU: JAK-01
+				Inventario: $inventario
 			</span>
 
 			<span class=\"stext-107 cl6 p-lr-25\">
-				Categories: Jacket, Men
+				Categoria: $categoria
 			</span>
 		</div>
 	</section>";
@@ -385,12 +405,7 @@ echo "<div class=\"container\">
 									</span>
 								</div>
 
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
+						
 							</div>
 						</div>
 					</div>
@@ -411,17 +426,9 @@ echo "<div class=\"container\">
 									<a href="product-detail.php" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 										Herschel supply
 									</a>
-
 									<span class="stext-105 cl3">
 										$35.31
 									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
 								</div>
 							</div>
 						</div>
@@ -448,13 +455,6 @@ echo "<div class=\"container\">
 										$25.50
 									</span>
 								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -479,13 +479,6 @@ echo "<div class=\"container\">
 									<span class="stext-105 cl3">
 										$75.00
 									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
 								</div>
 							</div>
 						</div>
@@ -512,13 +505,6 @@ echo "<div class=\"container\">
 										$34.75
 									</span>
 								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -544,13 +530,6 @@ echo "<div class=\"container\">
 										$93.20
 									</span>
 								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -575,13 +554,6 @@ echo "<div class=\"container\">
 									<span class="stext-105 cl3">
 										$52.66
 									</span>
-								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
 								</div>
 							</div>
 						</div>

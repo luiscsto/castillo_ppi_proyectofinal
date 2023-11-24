@@ -1,18 +1,21 @@
 <?php 
   session_start(); 
+
   if (!isset($_SESSION['u_nombre'])) {
         $_SESSION['msg'] = "Tienes que iniciar sesion primero";
-		$_SESSION['linkusuario']="login/login.php";
-  }
+/*         header('location: sesiones.php');
+*/  }
   if (isset($_GET['logout'])) {
         session_destroy();
         unset($_SESSION['u_nombre']);
-  }
+		
+/*         header("location: sesiones.php");
+ */  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Contact</title>
+	<title>Usuario</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
@@ -77,15 +80,9 @@
 						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</div>
-						<?php  if (isset($_SESSION['u_nombre'])) : ?>
-							<a href="usuario.php">
-								<?php else :?>
-							<a href="login/login.php">
-								<?php endif ?>
-								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-									<i class="zmdi zmdi-account-circle"></i>
-								</div>
-							</a>
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+							<i class="zmdi zmdi-account-circle"></i>
+						</div>
 					</div>
 				</nav>
 			</div>	
@@ -103,15 +100,9 @@
 				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</div>
-						<?php  if (isset($_SESSION['u_nombre'])) : ?>
-					<a href="usuario.php">
-							<?php else :?>
-					<a href="login/login.php">
-							<?php endif ?>
-								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-									<i class="zmdi zmdi-account-circle"></i>
-								</div>
-					</a>
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+					<i class="zmdi zmdi-account-circle"></i>
+				</div>
 			</div>
 
 			<!-- Button show menu -->
@@ -129,6 +120,8 @@
 				<li>
 					<a href="product.php">Productos</a>
 				</li>
+
+
 				<li>
 					<a href="about.php">Nosotros</a>
 				</li>
@@ -159,7 +152,7 @@
 				<ul class="header-cart-wrapitem w-full">
 					<li class="header-cart-item flex-w flex-t m-b-12">
 						<div class="header-cart-item-img">
-							<img src="images/a24-totebag-1.jpg" alt="IMG">
+							<img src="images/item-cart-01.jpg" alt="IMG">
 						</div>
 
 						<div class="header-cart-item-txt p-t-8">
@@ -223,211 +216,186 @@
 	</div>
 
 
-	<!-- Title page -->
-	<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-image: url('images/bg-01.jpg');">
-		<h2 class="ltext-105 cl0 txt-center">
-			Contacto
-		</h2>
-	</section>	
+	<!-- breadcrumb -->
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="index.php" class="stext-109 cl8 hov-cl1 trans-04">
+				Inicio
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+			<span class="stext-109 cl4">
+				Usuario
+			</span>
+		</div>
+	</div>
 
 
-	<!-- Content page -->
-	<section class="bg0 p-t-104 p-b-116">
+	<!-- Compras de usuario -->
+	<form class="bg0 p-t-75 p-b-85">
 		<div class="container">
-			<div class="flex-w flex-tr">
-				<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
-					<form>
-						<h4 class="mtext-105 cl2 txt-center p-b-30">
-							Mándanos un mensaje
-						</h4>
+		<h4 class="mtext-109 cl2 p-b-30">Tus pedidos </h4>
+			<div class="row">
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+					<div class="m-l-25 m-r--38 m-lr-0-xl">
+						<div class="wrap-table-shopping-cart">
+							<table class="table-shopping-cart">
+								<tr class="table_head">
+									<th class="column-1">No. Orden</th>
+									<th class="column-5">Producto</th>
+									<th class="column-5">Fecha</th>
+									<th class="column-5">Precio</th>
+								</tr>
 
-						<div class="bor8 m-b-20 how-pos4-parent">
-							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="email" placeholder="Tu correo">
-							<img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="ICON">
+								<tr class="table_row">
+									<td class="column-1">numero de orden</td>
+									<td class="column-5">producto</td>
+									<td class="column-5	">fecha</td>
+									<td class="column-5">PRECIO</td>
+								</tr>
+							</table>
 						</div>
-
-						<div class="bor8 m-b-30">
-							<textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="msg" placeholder="¿Cómo podemos ayudarte?"></textarea>
-						</div>
-
-						<button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
-							Enviar
-						</button>
-					</form>
+					</div>
 				</div>
+			<!--Informacion de usuario-->
+				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+						<h4 class="mtext-109 cl2 p-b-30">
+							Hola <?php echo $_SESSION['u_nombre']?>
+						</h4>
+						<a class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+							Correo: <?php echo $_SESSION['correo']?>
+						</a>
+						<a class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+							Direccion: <?php echo $_SESSION['direccion']?>
+						</a>
+						<a class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+							Fecha de cumpleaños: <?php echo $_SESSION['nacimiento']?>
+						</a>
+						<a class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+							No. de tarjeta:<?php echo $_SESSION['tarjeta']?>
+						</a>
+						<a href="index.php?logout='1'" class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+								CERRAR SESIÓN
+						</a>
 
-				<div class="size-210 bor10 flex-w flex-col-m p-lr-93 p-tb-30 p-lr-15-lg w-full-md">
-					<div class="flex-w w-full p-b-42">
-						<span class="fs-18 cl5 txt-center size-211">
-							<span class="lnr lnr-map-marker"></span>
-						</span>
-
-						<div class="size-212 p-t-2">
-							<span class="mtext-110 cl2">
-								Dirección
-							</span>
-
-							<p class="stext-115 cl6 size-213 p-t-18">
-								A24 Headquarters 31 West 27th Street, Manhattan, New York City, United States
-							</p>
-						</div>
-					</div>
-
-					<div class="flex-w w-full p-b-42">
-						<span class="fs-18 cl5 txt-center size-211">
-							<span class="lnr lnr-phone-handset"></span>
-						</span>
-
-						<div class="size-212 p-t-2">
-							<span class="mtext-110 cl2">
-								Hablemos
-							</span>
-
-							<p class="stext-115 cl1 size-213 p-t-18">
-								(+1)78 91 32 4062
-							</p>
-						</div>
-					</div>
-
-					<div class="flex-w w-full">
-						<span class="fs-18 cl5 txt-center size-211">
-							<span class="lnr lnr-envelope"></span>
-						</span>
-
-						<div class="size-212 p-t-2">
-							<span class="mtext-110 cl2">
-								Soporte
-							</span>
-
-							<p class="stext-115 cl1 size-213 p-t-18">
-								info@a24.com
-							</p>
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>	
-	
-	
-	<!-- Map -->
-	<div class="map">
-		<div class="size-303" id="google_map" data-map-x="40.691446" data-map-y="-73.886787" data-pin="images/icons/pin.png" data-scrollwhell="0" data-draggable="1" data-zoom="11"></div>
-	</div>
-
+	</form>
+		
 	<!-- Footer -->
 	<footer class="bg3 p-t-75 p-b-32">
-		<footer class="bg3 p-t-75 p-b-32">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-6 col-lg-3 p-b-50">
-						<h4 class="stext-301 cl0 p-b-30">
-							Categorias
-						</h4>
-	
-						<ul>
-							<li class="p-b-10">
-								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-									Ropa
-								</a>
-							</li>
-	
-							<li class="p-b-10">
-								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-									Libros
-								</a>
-							</li>
-	
-							<li class="p-b-10">
-								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-									Colleccionables
-								</a>
-							</li>
-	
-							<li class="p-b-10">
-								<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
-									Hogar
-								</a>
-							</li>
-						</ul>
-					</div>
-	
-	
-					<div class="col-sm-6 col-lg-3 p-b-50">
-						<h4 class="stext-301 cl0 p-b-30">
-							¿Dudas?
-						</h4>
-	
-						<p class="stext-107 cl7 size-201">
-							Si te quedaron dudas sobre nuestros productos, por favor no dudes contactarnos al (+1)78 91 32 4062
-						</p>
-	
-						<div class="p-t-27">
-							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-								<i class="fa fa-facebook"></i>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Categorias
+					</h4>
+
+					<ul>
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Ropa
 							</a>
-	
-							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-								<i class="fa fa-instagram"></i>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Libros
 							</a>
-	
-							<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
-								<i class="fa fa-pinterest-p"></i>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Colleccionables
 							</a>
-						</div>
-					</div>
-	
-					<div class="col-sm-6 col-lg-3 p-b-50">
-						<h4 class="stext-301 cl0 p-b-30">
-							Registra tu contacto
-						</h4>
-	
-						<form>
-							<div class="wrap-input1 w-full p-b-4">
-								<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
-								<div class="focus-input1 trans-04"></div>
-							</div>
-	
-							<div class="p-t-18">
-								<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
-									Compartir
-								</button>
-							</div>
-						</form>
+						</li>
+
+						<li class="p-b-10">
+							<a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+								Hogar
+							</a>
+						</li>
+					</ul>
+				</div>
+
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						¿Dudas?
+					</h4>
+
+					<p class="stext-107 cl7 size-201">
+						Si te quedaron dudas sobre nuestros productos, por favor no dudes contactarnos al (+1)78 91 32 4062
+					</p>
+
+					<div class="p-t-27">
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-facebook"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-instagram"></i>
+						</a>
+
+						<a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+							<i class="fa fa-pinterest-p"></i>
+						</a>
 					</div>
 				</div>
-	
-				<div class="p-t-40">
-					<div class="flex-c-m flex-w p-b-18">
-						<a href="#" class="m-all-1">
-							<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
-						</a>
-	
-						<a href="#" class="m-all-1">
-							<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
-						</a>
-	
-						<a href="#" class="m-all-1">
-							<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
-						</a>
-	
-						<a href="#" class="m-all-1">
-							<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
-						</a>
-	
-						<a href="#" class="m-all-1">
-							<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
-						</a>
-					</div>
-	
-					<p class="stext-107 cl6 txt-center">
-						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-	Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-	<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-	
-					</p>
+
+				<div class="col-sm-6 col-lg-3 p-b-50">
+					<h4 class="stext-301 cl0 p-b-30">
+						Registra tu contacto
+					</h4>
+
+					<form>
+						<div class="wrap-input1 w-full p-b-4">
+							<input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+							<div class="focus-input1 trans-04"></div>
+						</div>
+
+						<div class="p-t-18">
+							<button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+								Compartir
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
+
+			<div class="p-t-40">
+				<div class="flex-c-m flex-w p-b-18">
+					<a href="#" class="m-all-1">
+						<img src="images/icons/icon-pay-01.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="images/icons/icon-pay-02.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="images/icons/icon-pay-03.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="images/icons/icon-pay-04.png" alt="ICON-PAY">
+					</a>
+
+					<a href="#" class="m-all-1">
+						<img src="images/icons/icon-pay-05.png" alt="ICON-PAY">
+					</a>
+				</div>
+
+				<p class="stext-107 cl6 txt-center">
+					<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> &amp; distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+
+				</p>
+			</div>
+		</div>
 	</footer>
 
 
@@ -474,9 +442,6 @@
 			})
 		});
 	</script>
-<!--===============================================================================================-->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAKFWBqlKAGCeS1rMVoaNlwyayu0e0YRes"></script>
-	<script src="js/map-custom.js"></script>
 <!--===============================================================================================-->
 	<script src="js/main.js"></script>
 

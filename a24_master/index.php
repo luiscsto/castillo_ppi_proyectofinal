@@ -1,3 +1,14 @@
+<?php 
+  session_start(); 
+  if (!isset($_SESSION['u_nombre'])) {
+        $_SESSION['msg'] = "Tienes que iniciar sesion primero";
+		$_SESSION['linkusuario']="login/login.php";
+  }
+  if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['u_nombre']);
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,6 +47,7 @@
 <!--===============================================================================================-->
 </head>
 <body class="animsition">
+	
 	<header class="header-v2">
 		<div class="container-menu-desktop">
 				<div class="wrap-menu-desktop">
@@ -68,7 +80,11 @@
 							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
 								<i class="zmdi zmdi-shopping-cart"></i>
 							</div>
-							<a href="login/login.php">
+								<?php  if (isset($_SESSION['u_nombre'])) : ?>
+							<a href="usuario.php">
+								<?php else :?>
+									<a href="login/login.php">
+								<?php endif ?>
 								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
 									<i class="zmdi zmdi-account-circle"></i>
 								</div>
@@ -90,9 +106,15 @@
 					<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
 						<i class="zmdi zmdi-shopping-cart"></i>
 					</div>
-					<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
-						<i class="zmdi zmdi-account-circle"></i>
-					</div>
+					<?php  if (isset($_SESSION['u_nombre'])) : ?>
+						<a href="usuario.php">
+							<?php else :?>
+						<a href="login/login.php">
+							<?php endif ?>
+							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+								<i class="zmdi zmdi-account-circle"></i>
+							</div>
+						</a>
 				</div>
 
 				<!-- Button show menu -->
@@ -148,9 +170,8 @@
 
 						<div class="header-cart-item-txt p-t-8">
 							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								White Shirt Pleat
+								Borign ass shirt
 							</a>
-
 							<span class="header-cart-item-info">
 								1 x $19.00
 							</span>

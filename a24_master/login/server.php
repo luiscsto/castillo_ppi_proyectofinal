@@ -63,12 +63,12 @@ if (isset($_POST['login_user'])) {
     }
   
     if (count($errors) == 0) {
-/*           $contrasena = md5($contrasena);
- */          $query = "SELECT * FROM usuario WHERE correo='$correo' AND contrasena='$contrasena'";
+          $query = "SELECT * FROM usuario WHERE correo='$correo' AND contrasena='$contrasena'";
           //guardamos el query que trae los datos del usuario
           $result = mysqli_query($con, $query);
        
-          //obtenemos las distintas rows para sacar datos del query
+          //obtenemos las distintas rows para sacar datos del query,
+          //iniciamos sesion y redirigimos a la pagina de inicio
           $row= mysqli_fetch_row($result);
           if (mysqli_num_rows($result) == 1) {
             $_SESSION['id_usuario'] = $row[0];

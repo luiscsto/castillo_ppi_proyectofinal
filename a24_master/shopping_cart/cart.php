@@ -1,13 +1,141 @@
 <?php 
-  session_start(); 
+  //determinar a donde lleva el boton de usuario
   if (!isset($_SESSION['u_nombre'])) {
-        $_SESSION['msg'] = "Tienes que iniciar sesion primero";
-		$_SESSION['linkusuario']="login/login.php";
+		$_SESSION['linkusuario']="../login/login.php";
   }
   if (isset($_GET['logout'])) {
         session_destroy();
         unset($_SESSION['u_nombre']);
   }
+
+// If the user clicked the add to cart button on the product page we can check for the form data
+if (isset($_POST['id_producto'], $_POST['cantidad']) && is_numeric($_POST['id_producto']) && is_numeric($_POST['cantidad'])) {
+    // Set the post variables so we easily identify them, also make sure they are integer
+    $id_producto = (int)$_POST['id_producto'];
+	$cantidad = (int)$_POST['cantidad'];
+    // Prepare the SQL statement, we basically are checking if the product exists in our databaser
+    $stmt = $pdo->prepare('SELECT * FROM productos WHERE id_producto = ?');
+    $stmt->execute([$_POST['id_producto']]);
+    // Fetch the product from the database and return the result as an Array
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Check if the product exists (array is not empty)
+    if ($product && $cantidad > 0) {
+        // Product exists in database, now we can create/update the session variable for the cart
+        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+            if (array_key_exists($id_producto, $_SESSION['cart'])) {
+                // Product exists in cart so just update the quanity
+				//actualizamos la tabla del carrito
+                $_SESSION['cart'][$id_producto] += $cantidad;
+				$elprecio=(float)$product['precio'] * (int)$_SESSION['cart'][$id_producto];
+				$sql = "UPDATE carritos SET cantidad = '{$_SESSION['cart'][$id_producto]}', total = '$elprecio' WHERE id_usuario = '{$_SESSION['id_usuario']}' AND id_producto = '$id_producto'";
+				$actualizacion=$pdo->exec($sql);
+				if ($actualizacion !== false) {
+					echo "Cambio exitoso";
+				} else {
+					echo "Error al cambiar datos: " . $pdo->errorInfo()[2];
+				}
+            } else {
+                // Product is not in cart so add it
+                $_SESSION['cart'][$id_producto] = $cantidad;
+				//insertamos el producto en el carrito
+				$elprecio=(float)$product['precio'] * (int)$cantidad;
+				$sql="INSERT INTO carritos (id_usuario, id_producto, cantidad, total) VALUES ('{$_SESSION['id_usuario']}', '$id_producto', '$cantidad','$elprecio')";
+				$insercion=$pdo->exec($sql);
+				if ($insercion !== false) {
+					echo "Inserción exitosa";
+				} else {
+					echo "Error al insertar datos: " . $pdo->errorInfo()[2];
+				}
+            }
+        } else {
+            // There are no products in cart, this will add the first product to cart
+			//insertamos el producto en el carrito
+            $_SESSION['cart'] = array($id_producto => $cantidad);
+			$elprecio=(float)$product['precio'] * (int)$cantidad;
+			$sql="INSERT INTO carritos (id_usuario, id_producto, cantidad, total) VALUES ('{$_SESSION['id_usuario']}', '$id_producto', '$cantidad','$elprecio')";
+			$insercion=$pdo->exec($sql);
+			if ($insercion !== false) {
+				echo "Inserción exitosa";
+			} else {
+				echo "Error al insertar datos: " . $pdo->errorInfo()[2];
+			}
+        }
+
+    }
+    // Prevent form resubmission...
+    header('location: index.php?page=cart');
+    exit;
+}
+// Remove product from cart, check for the URL param "remove", this is the product id, make sure it's a number and check if it's in the cart
+if (isset($_GET['remove']) && is_numeric($_GET['remove']) && isset($_SESSION['cart']) && isset($_SESSION['cart'][$_GET['remove']])) {
+    // Remove the product from the shopping cart
+	//lo eliminamos de la base de datos
+	$sql = "DELETE FROM carritos WHERE id_usuario = '{$_SESSION['id_usuario']}' AND id_producto = '{$_GET['remove']}'";
+    $pdo->exec($sql);
+    unset($_SESSION['cart'][$_GET['remove']]);
+}
+// Update product quantities in cart if the user clicks the "Update" button on the shopping cart page
+if (isset($_POST['update']) && isset($_SESSION['cart'])) {
+    // Loop through the post data so we can update the quantities for every product in cart
+    foreach ($_POST as $k => $v) {
+        if (strpos($k, 'cantidad') !== false && is_numeric($v)) {
+            $id_producto = str_replace('cantidad-', '', $k);
+            $cantidad = (int)$v;
+            // Always do checks and validation
+            if (is_numeric($id_producto) && isset($_SESSION['cart'][$id_producto]) && $cantidad > 0) {
+                // Update new cantidad
+				//primero recuperamos el precio consultandolo en la base de datos
+				$con=mysqli_connect('localhost','root',"",'final_ppi');
+				$query = "SELECT precio FROM productos WHERE id_producto='$id_producto'";
+				//guardamos el query que trae los datos del precio del producto
+				$result = mysqli_query($con, $query);
+				//obtenemos la row que nos dio para recuperar el precio
+				$row= mysqli_fetch_row($result);
+				if (mysqli_num_rows($result) == 1) {
+					$precio =(int)$row[0];
+				}
+				//asignamos el nuevo valor de cantidad 
+                $_SESSION['cart'][$id_producto] = $cantidad;
+				$elprecio= $precio * (int)$cantidad;
+				$sql = "UPDATE carritos SET cantidad = '{$_SESSION['cart'][$id_producto]}', total = '$elprecio' WHERE id_usuario = '{$_SESSION['id_usuario']}' AND id_producto = '$id_producto'";
+				$actualizacion=$pdo->exec($sql);
+				if ($actualizacion !== false) {
+					echo "Cambio exitoso";
+				} else {
+					echo "Error al cambiar datos: " . $pdo->errorInfo()[2];
+				}
+            }
+        }
+    }
+    // Prevent form resubmission...
+    header('location: index.php?page=cart');
+    exit;
+}
+// Send the user to the place order page if they click the Place Order button, also the cart should not be empty
+if (isset($_POST['placeorder']) && isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+    header('Location: index.php?page=placeorder');
+    exit;
+
+}
+// Check the session variable for products in cart
+$products_in_cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
+$products = array();
+$subtotal = 0.00;
+// If there are products in cart
+if ($products_in_cart) {
+    // There are products in the cart so we need to select those products from the database
+    // Products in cart array to question mark string array, we need the SQL statement to include IN (?,?,?,...etc)
+    $array_to_question_marks = implode(',', array_fill(0, count($products_in_cart), '?'));
+    $stmt = $pdo->prepare('SELECT * FROM productos WHERE id_producto IN (' . $array_to_question_marks . ')');
+    // We only need the array keys, not the values, the keys are the id's of the products
+    $stmt->execute(array_keys($products_in_cart));
+    // Fetch the products from the database and return the result as an Array
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Calculate the subtotal
+    foreach ($products as $product) {
+        $subtotal += (float)$product['precio'] * (int)$products_in_cart[$product['id_producto']];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,28 +144,28 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/a24-logo.svg"/>
+	<link rel="icon" type="image/png" href="../images/icons/a24-logo.svg"/>
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" type="text/css" href="../fonts/iconic/css/material-design-iconic-font.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+	<link rel="stylesheet" type="text/css" href="../fonts/linearicons-v1.0.0/icon-font.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/animate/animate.css">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/css-hamburgers/hamburgers.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/animsition/css/animsition.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/select2/select2.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="../vendor/perfect-scrollbar/perfect-scrollbar.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="../css/util.css">
+	<link rel="stylesheet" type="text/css" href="../css/main.css">
 <!--===============================================================================================-->
 </head>
 <body class="animsition">
@@ -51,36 +179,36 @@
 				<nav class="limiter-menu-desktop container">
 					
 					<!-- Logo desktop -->		
-					<a href="index.php" class="logo">
-						<img src="images/icons/a24-logo.svg" alt="IMG-LOGO">
+					<a href="../index.php" class="logo">
+						<img src="../images/icons/a24-logo.svg" alt="IMG-LOGO">
 					</a>
 
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
 							<li>
-								<a href="product.php">Productos</a>
+								<a href="../product.php">Productos</a>
 							</li>
 
 							<li>
-								<a href="about.php">Nosotros</a>
+								<a href="../about.php">Nosotros</a>
 							</li>
 
 							<li>
-								<a href="contact.php">Contacto</a>
+								<a href="../contact.php">Contacto</a>
 							</li>
 						</ul>
 					</div>		
 
 					<!-- Icon header -->
 					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> 
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</div>
 						<?php  if (isset($_SESSION['u_nombre'])) : ?>
-							<a href="usuario.php">
+							<a href="../usuario.php">
 								<?php else :?>
-							<a href="login/login.php">
+							<a href="../login/login.php">
 								<?php endif ?>
 								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
 									<i class="zmdi zmdi-account-circle"></i>
@@ -95,7 +223,7 @@
 		<div class="wrap-header-mobile">
 			<!-- Logo moblie -->		
 			<div class="logo-mobile">
-				<a href="index.php"><img src="images/icons/a24-logo.svg" alt="IMG-LOGO"></a>
+				<a href="../index.php"><img src="../images/icons/a24-logo.svg" alt="IMG-LOGO"></a>
 			</div>
 
 			<!-- Icon header -->
@@ -104,9 +232,9 @@
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</div>
 						<?php  if (isset($_SESSION['u_nombre'])) : ?>
-					<a href="usuario.php">
+					<a href="../usuario.php">
 						<?php else :?>
-					<a href="login/login.php">
+					<a href="../login/login.php">
 						<?php endif ?>
 							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
 								<i class="zmdi zmdi-account-circle"></i>
@@ -127,16 +255,16 @@
 		<div class="menu-mobile">
 		<ul class="main-menu-m">
 				<li>
-					<a href="product.php">Productos</a>
+					<a href="../product.php">Productos</a>
 				</li>
 
 
 				<li>
-					<a href="about.php">Nosotros</a>
+					<a href="../about.php">Nosotros</a>
 				</li>
 
 				<li>
-					<a href="contact.php">Contacto</a>
+					<a href="../contact.php">Contacto</a>
 				</li>
 			</ul>
 		</div>
@@ -240,7 +368,7 @@
 
 
 	<!-- Shoping Cart -->
-	<form class="bg0 p-t-75 p-b-85">
+	<form class="bg0 p-t-75 p-b-85" action="index.php?page=cart" method="post">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -254,61 +382,47 @@
 									<th class="column-4">Cantidad</th>
 									<th class="column-5">Total</th>
 								</tr>
-
+								<?php if (empty($products)): ?>
+								<tr>
+									<td colspan="5" style="text-align:center;">No hay productos en tu carrito! <br> <a href="../product.php">Echales un vistazo<a> </td>
+								</tr>
+								<?php else: ?>
+								<?php foreach ($products as $product): ?>
 								<tr class="table_row">
 									<td class="column-1">
 										<div class="how-itemcart1">
-											<img src="images/item-cart-04.jpg" alt="IMG">
+											<img src="../<?=$product['fotos1']?>" alt="IMG">
 										</div>
 									</td>
-									<td class="column-2">Fresh Strawberries</td>
-									<td class="column-3">$ 36.00</td>
+									<td class="column-2">
+										<?=$product['p_nombre']?> <br>
+										<a href="index.php?page=cart&remove=<?=$product['id_producto']?>" class="remove" style="color:#B91515">Eliminar</a>
+									</td>
+									<td class="column-3">$<?=$product['precio']?></td>
 									<td class="column-4">
 										<div class="wrap-num-product flex-w m-l-auto m-r-0">
 											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-minus"></i>
 											</div>
 
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product1" value="1">
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="cantidad-<?=$product['id_producto']?>" value="<?=$products_in_cart[$product['id_producto']]?>" min="1" max="<?=$product['inventario']?>" required>
 
 											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
 									</td>
-									<td class="column-5">$ 36.00</td>
+									<td class="column-5 precio">$<?=$product['precio'] * $products_in_cart[$product['id_producto']]?></td>
 								</tr>
-
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="images/a24-totebag-1.jpg" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2">Lightweight Jacket</td>
-									<td class="column-3">$ 16.00</td>
-									<td class="column-4">
-										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-minus"></i>
-											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product2" value="1">
-
-											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-												<i class="fs-16 zmdi zmdi-plus"></i>
-											</div>
-										</div>
-									</td>
-									<td class="column-5">$ 16.00</td>
-								</tr>
+								<?php endforeach; ?>
+                				<?php endif; ?>
 							</table>
 						</div>
 
 						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-							<div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-								Actualizar carrito
-							</div>
+						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit" name="update">
+							Actualizar carrito
+						</button>
 						</div>
 					</div>
 				</div>
@@ -325,14 +439,14 @@
 								</span>
 							</div>
 
-							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									$79.65
+							<div class="size-209 p-t-1 subtotal">
+								<span class="mtext-110 cl2 precio">
+									$<?=$subtotal?>
 								</span>
 							</div>
 						</div>
 
-						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+						<button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" name="placeorder" type="submit">
 							Pagar
 						</button>
 					</div>
@@ -464,14 +578,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</div>
 
 <!--===============================================================================================-->	
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="../vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
+	<script src="../vendor/animsition/js/animsition.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../vendor/bootstrap/js/popper.js"></script>
+	<script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
+	<script src="../vendor/select2/select2.min.js"></script>
 	<script>
 		$(".js-select2").each(function(){
 			$(this).select2({
@@ -481,9 +595,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		})
 	</script>
 <!--===============================================================================================-->
-	<script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+	<script src="../vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
 <!--===============================================================================================-->
-	<script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="../vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script>
 		$('.js-pscroll').each(function(){
 			$(this).css('position','relative');
@@ -500,7 +614,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		});
 	</script>
 <!--===============================================================================================-->
-	<script src="js/main.js"></script>
+	<script src="../js/main.js"></script>
 
 </body>
 </html>

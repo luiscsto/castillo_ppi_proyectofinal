@@ -77,9 +77,15 @@
 
 						<!-- Icon header -->
 						<div class="wrap-icon-header flex-w flex-r-m">
-							<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</div>
+						<?php  if (isset($_SESSION['u_nombre'])) : ?>
+							<a href="shopping_cart/index.php?page=cart">
+								<?php else :?>
+									<a href="login/login.php">
+								<?php endif ?>
+								<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2"> <!-- aquí pondremos el counter del carrito -->
+									<i class="zmdi zmdi-shopping-cart"></i>
+								</div>
+							</a>
 								<?php  if (isset($_SESSION['u_nombre'])) : ?>
 							<a href="usuario.php">
 								<?php else :?>
@@ -218,7 +224,7 @@
 
 					<div class="header-cart-buttons flex-w w-full">
 
-						<a href="shoping-cart.php" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
+						<a href="shopping-cart.php" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
 							Check Out
 						</a>
 					</div>

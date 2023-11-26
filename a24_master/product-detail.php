@@ -109,7 +109,7 @@
 				<div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" data-notify="2">
 					<i class="zmdi zmdi-shopping-cart"></i>
 				</div>
-						<?php  if (isset($_SESSION['u_nombre'])) : ?>
+						<?php  if (isset($_SESSION['u_nombre'])) : ?> <!-- Vamos a alterar el link del carrito dependiendo si esta o no inciada la sesion -->
 					<a href="usuario.php">
 						<?php else :?>
 					<a href="login/login.php">
@@ -255,53 +255,54 @@
 			$inventario = $row['inventario'];
 			$categoria = $row['categoria'];
 		}
+		?>
 
-echo "<div class=\"container\">
-		<div class=\"bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg\">
-			<a href=\"index.php\" class=\"stext-109 cl8 hov-cl1 trans-04\">
+		<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="index.php" class="stext-109 cl8 hov-cl1 trans-04">
 				Inicio
-				<i class=\"fa fa-angle-right m-l-9 m-r-10\" aria-hidden=\"true\"></i>
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
 
-			<a href=\"product.php\" class=\"stext-109 cl8 hov-cl1 trans-04\">
-				$categoria
-				<i class=\"fa fa-angle-right m-l-9 m-r-10\" aria-hidden=\"true\"></i>
+			<a href="product.php" class="stext-109 cl8 hov-cl1 trans-04">
+				<?=$categoria?>
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
 
-			<span class=\"stext-109 cl4\">
-				$p_nombre
+			<span class="stext-109 cl4">
+				<?=$p_nombre?>
 			</span>
 		</div>
 	  </div>
 		
 
 	<!-- Product Detail -->
-	<section class=\"sec-product-detail bg0 p-t-65 p-b-60\">
-		<div class=\"container\">
-			<div class=\"row\">
-				<div class=\"col-md-6 col-lg-7 p-b-30\">
-					<div class=\"p-l-25 p-r-30 p-lr-0-lg\">
-						<div class=\"wrap-slick3 flex-sb flex-w\">
-							<div class=\"wrap-slick3-dots\"></div>
-							<div class=\"wrap-slick3-arrows flex-sb-m flex-w\"></div>
+	<section class="sec-product-detail bg0 p-t-65 p-b-60">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-lg-7 p-b-30">
+					<div class="p-l-25 p-r-30 p-lr-0-lg">
+						<div class="wrap-slick3 flex-sb flex-w">
+							<div class="wrap-slick3-dots"></div>
+							<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
-							<div class=\"slick3 gallery-lb\">
-								<div class=\"item-slick3\" data-thumb=\"$fotos1\">
-									<div class=\"wrap-pic-w pos-relative\">
-										<img src=\"$fotos1\" alt=\"IMG-PRODUCT\">
+							<div class="slick3 gallery-lb">
+								<div class="item-slick3" data-thumb="<?=$fotos1?>">
+									<div class="wrap-pic-w pos-relative">
+										<img src="<?=$fotos1?>" alt="IMG-PRODUCT">
 
-										<a class=\"flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04\" href=\"$fotos1\">
-											<i class=\"fa fa-expand\"></i>
+										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="<?=$fotos1?>">
+											<i class="fa fa-expand"></i>
 										</a>
 									</div>
 								</div>
 
-								<div class=\"item-slick3\" data-thumb=\"$fotos2\">
-									<div class=\"wrap-pic-w pos-relative\">
-										<img src=\"$fotos2\" alt=\"IMG-PRODUCT\">
+								<div class="item-slick3" data-thumb="<?=$fotos2?>">
+									<div class="wrap-pic-w pos-relative">
+										<img src="<?=$fotos2?>" alt="IMG-PRODUCT">
 
-										<a class=\"flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04\" href=\"$fotos2\">
-											<i class=\"fa fa-expand\"></i>
+										<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="<?=$fotos2?>">
+											<i class="fa fa-expand"></i>
 										</a>
 									</div>
 								</div>
@@ -310,43 +311,48 @@ echo "<div class=\"container\">
 					</div>
 				</div>
 					
-				<div class=\"col-md-6 col-lg-5 p-b-30\">
-					<div class=\"p-r-50 p-t-5 p-lr-0-lg\">
-						<h4 class=\"mtext-105 cl2 js-name-detail p-b-14\">
-								$p_nombre
+				<div class="col-md-6 col-lg-5 p-b-30">
+					<div class="p-r-50 p-t-5 p-lr-0-lg">
+						<h4 class="mtext-105 cl2 js-name-detail p-b-14">
+								<?=$p_nombre?>
 						</h4>
 
-						<span class=\"mtext-106 cl2\">
-							$$precio
+						<span class="mtext-106 cl2">
+							$<?=$precio?>
 						</span>
 
-						<p class=\"stext-102 cl3 p-t-23\">
-							$descripcion
+						<p class="stext-102 cl3 p-t-23">
+							<?=$descripcion?>
 						</p>
 						
 						<!--  -->
-						<div class=\"p-t-33\">
-							
+						<div class="p-t-33">
+						<!-- Vamos a alterar el link del boton "añadir al carrito dependiendo si esta o no inciada la sesion -->
+						<?php  if (isset($_SESSION['u_nombre'])) : ?> 
+							<form action="shopping_cart/index.php?page=cart" method="post">
+						<?php else :?>
+							<form action="login/login.php">
+						<?php endif ?>
+								<div class="flex-w flex-r-m p-b-10">
+									<div class="size-204 flex-w flex-m respon6-next">
+										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
+											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-minus"></i>
+											</div>
 
-							<div class=\"flex-w flex-r-m p-b-10\">
-								<div class=\"size-204 flex-w flex-m respon6-next\">
-									<div class=\"wrap-num-product flex-w m-r-20 m-tb-10\">
-										<div class=\"btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m\">
-											<i class=\"fs-16 zmdi zmdi-minus\"></i>
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="cantidad" value="1" min="1" max="<?=$inventario?>">
+
+											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+												<i class="fs-16 zmdi zmdi-plus"></i>
+											</div>
 										</div>
-
-										<input class=\"mtext-104 cl3 txt-center num-product\" type=\"number\" name=\"num-product\" value=\"1\">
-
-										<div class=\"btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m\">
-											<i class=\"fs-16 zmdi zmdi-plus\"></i>
-										</div>
+										<input type="hidden" name="id_producto" value="<?=$id?>">
+											<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" type="submit">
+												Añadir al carrito
+											</button>
 									</div>
-
-									<button class=\"flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail\">
-										Añadir al carrito
-									</button>
-								</div>
-							</div>	
+								</div>	
+							</form>
 						</div>
 
 						<!--  -->
@@ -358,17 +364,16 @@ echo "<div class=\"container\">
 			
 		</div>
 
-		<div class=\"bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15\">
-			<span class=\"stext-107 cl6 p-lr-25\">
-				Inventario: $inventario
+		<div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
+			<span class="stext-107 cl6 p-lr-25">
+				Inventario: <?=$inventario?>
 			</span>
 
-			<span class=\"stext-107 cl6 p-lr-25\">
-				Categoria: $categoria
+			<span class="stext-107 cl6 p-lr-25">
+				Categoria: <?=$categoria?>
 			</span>
 		</div>
-	</section>";
-	?>
+	</section>
 
 
 	<!-- Related Products -->

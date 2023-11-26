@@ -3,15 +3,28 @@
 
   if (!isset($_SESSION['u_nombre'])) {
         $_SESSION['msg'] = "Tienes que iniciar sesion primero";
-/*         header('location: sesiones.php');
-*/  }
+	  }
   if (isset($_GET['logout'])) {
-        session_destroy();
         unset($_SESSION['u_nombre']);
-		
-/*         header("location: sesiones.php");
- */  }
-?>
+		unset($_SESSION['cart']);
+		session_destroy();
+	  }
+	 /* Nos conectaremos a la base de datos y agarraremos los datos de compras*/
+       $DATABASE_HOST = 'localhost';
+	   $DATABASE_USER = 'root';
+	   $DATABASE_PASS = '';
+	   $DATABASE_NAME = 'final_ppi';
+	   try {
+		   $pdo= new PDO('mysql:host=' . $DATABASE_HOST . ';dbname=' . $DATABASE_NAME . ';charset=utf8', $DATABASE_USER, $DATABASE_PASS);
+	   } catch (PDOException $e) {
+		   // If there is an error with the connection, stop the script and display the error.
+		   die("Error de conexión: " . $e->getMessage());
+		}		
+	   //agarramos los datos de compras y las guardamos en $datosCompras
+		$sqlAgarrarCompras = "SELECT * FROM compras WHERE id_usuario = '{$_SESSION['id_usuario']}'";
+		$stmtAgarrarCompras = $pdo->query($sqlAgarrarCompras);
+		$datosCompras = $stmtAgarrarCompras->fetchAll(PDO::FETCH_ASSOC);
+		?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +57,6 @@
 <!--===============================================================================================-->
 </head>
 <body class="animsition">
-	
 	<!-- Header -->
 	<header class="header-v2">
 		<!-- Header desktop -->
@@ -238,20 +250,49 @@
 				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
 					<div class="m-l-25 m-r--38 m-lr-0-xl">
 						<div class="wrap-table-shopping-cart">
-							<table class="table-shopping-cart">
+						<table class="table-shopping-cart">
 								<tr class="table_head">
-									<th class="column-1">No. Orden</th>
+									<th class="column-2">NO. Orden</th>
 									<th class="column-5">Producto</th>
+									<th class="column-2"></th>
+									<th class="column-3">Cantidad</th>
+									<th class="column-2">Total</th>
 									<th class="column-5">Fecha</th>
-									<th class="column-5">Precio</th>
 								</tr>
-
+								<?php if (empty($datosCompras)): ?>
+								<tr>
+									<td colspan="5" style="text-align:center;">¡No haz hecho ninguna compra! <br> <a href="/product.php">Echale un vistazo a nuestros productos<a> </td>
+								</tr>
+								<?php else: ?>
+								<?php foreach ($datosCompras as $articulo): 
+									$sqlAgarrarDatosProdcucto = "SELECT p_nombre, fotos1 FROM productos WHERE id_producto = '{$articulo['id_producto']}'";
+									$stmtAgarrarDatosProdcucto = $pdo->query($sqlAgarrarDatosProdcucto);
+									$datosProducto = $stmtAgarrarDatosProdcucto->fetch(PDO::FETCH_ASSOC);
+								?>
 								<tr class="table_row">
-									<td class="column-1">numero de orden</td>
-									<td class="column-5">producto</td>
-									<td class="column-5	">fecha</td>
-									<td class="column-5">PRECIO</td>
+								<td class="column-1">
+											<?=$articulo['id_compra']?>
+									</td>
+									<td class="column-1">
+										<div class="how-itemcart1">
+											<img src="<?=$datosProducto['fotos1']?>" alt="IMG">
+										</div>
+									</td>
+									<td class="column-5">
+										<?=$datosProducto['p_nombre']?>
+									</td>
+									<td class="column-5">
+									<?=$articulo['cantidad_producto']?>	
+								</td>
+									<td class="column-2">
+										$<?=$articulo['total']?>
+									</td>
+									<td class="column-5" style="font-size:10px">
+										<?=$articulo['fecha']?>
+									</td>
 								</tr>
+								<?php endforeach; ?>
+                				<?php endif; ?>
 							</table>
 						</div>
 					</div>

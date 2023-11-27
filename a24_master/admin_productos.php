@@ -25,6 +25,7 @@
         <tr>
         <th>id_producto</th>
         <th>p_nombre</th>
+        <th>descripcion</th>
         <th>fotos1</th>
         <th>fotos2</th>
         <th>precio</th>
@@ -36,6 +37,7 @@
             echo "<tr>";
             echo "<td>" . $row['id_producto'] . "</td>";
             echo "<td>" . $row['p_nombre'] . "</td>";
+            echo "<td>" .$row['descripcion'] . "</td>";
             echo "<td><img src=\"". $row['fotos1']."\" width=70 height=50></img></td>";
             echo "<td> <img src=\"". $row['fotos2']."\" width=70 height=50></img></td>";
             echo "<td>" . $row['precio'] . "</td>";

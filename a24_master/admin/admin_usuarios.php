@@ -48,7 +48,7 @@
 
         mysqli_close($con);
     ?>
-    <a href="index.php">Regresar a la pagina de inicio</a>
+    <a href="admin.php">Regresar a la pagina de inicio</a>
   </div>
 </body>
 </html>

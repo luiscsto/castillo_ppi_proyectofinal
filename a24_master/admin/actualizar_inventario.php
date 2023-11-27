@@ -40,7 +40,7 @@
             <input type="text" id="categoria" name="categoria"><br>
             <input type="submit" value="Actualizar">
         </form>
-        <a href="index.php">Regresar a inicio</a>
+        <a href="admin.php">Regresar a inicio</a>
     </div>
 </body>
 </html>

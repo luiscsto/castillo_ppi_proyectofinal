@@ -75,10 +75,6 @@
 						<a class="txt2" href="../index.php">
 							Regresar al Inicio
 						</a>
-						<br>
-						<a class="txt2" href="sesiones.php">
-							Pagina de sesiones
-						</a>
 					</div>
 				</form>
 			</div>

@@ -35,7 +35,7 @@
 
         echo "</table>";
     ?>
-    <br><a href="index.php">Regresar a inicio</a>
+    <br><a href="admin.php">Regresar a inicio</a>
     </div>
 </body>
 </html>

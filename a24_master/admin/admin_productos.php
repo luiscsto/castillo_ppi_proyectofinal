@@ -38,8 +38,8 @@
             echo "<td>" . $row['id_producto'] . "</td>";
             echo "<td>" . $row['p_nombre'] . "</td>";
             echo "<td>" .$row['descripcion'] . "</td>";
-            echo "<td><img src=\"". $row['fotos1']."\" width=70 height=50></img></td>";
-            echo "<td> <img src=\"". $row['fotos2']."\" width=70 height=50></img></td>";
+            echo "<td><img src=\"../". $row['fotos1']."\" width=70 height=50></img></td>";
+            echo "<td> <img src=\"../". $row['fotos2']."\" width=70 height=50></img></td>";
             echo "<td>" . $row['precio'] . "</td>";
             echo "<td>" . $row['inventario'] . "</td>";
             echo "<td>" . $row['categoria'] . "</td>";
@@ -50,7 +50,7 @@
 
         mysqli_close($con);
     ?>
-    <a href="index.php">Regresar a la pagina de inicio</a>
+    <a href="admin.php">Regresar a la pagina de inicio</a>
   </div>
 </body>
 </html>

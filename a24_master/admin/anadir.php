@@ -25,7 +25,7 @@
             echo "Error: " . $e->getMessage();
         }
     ?>
-    <br><a href="anadir_producto.php">Regresar</a>
+    <br><a href="admin.php">Regresar</a>
 </body>
 </html>
 

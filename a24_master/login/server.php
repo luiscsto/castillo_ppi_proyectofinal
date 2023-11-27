@@ -36,9 +36,9 @@ if(!empty($_POST['nombre']) && !empty($_POST['correo']) && !empty($_POST['nacimi
     
         $result=mysqli_query($con,$sql);  
             if($result){  
-        echo "Account Successfully Created";
+        echo "Se creo la cuenta correctamente";
         } else {  
-        echo "Failure!";
+        echo "Hubo un fallo en la creacion de la cuenta";
         }  
     } else {  
     echo "Ese correo ya fue tomado.";  

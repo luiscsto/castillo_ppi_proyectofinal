@@ -45,6 +45,6 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <br><a href="actualizar_inventario.php">Regresar</a>
+    <br><a href="admin.php">Regresar</a>
 </body>
 </html>

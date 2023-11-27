@@ -27,7 +27,7 @@
         <input type="text" id="categoria" name="categoria" required><br>
         <input type="submit" value="Añadir">
     </form>
-    <br><a href="index.html">Regresar a inicio</a>
+    <br><a href="admin.php">Regresar a inicio</a>
 </div>
 </body>
 </html>

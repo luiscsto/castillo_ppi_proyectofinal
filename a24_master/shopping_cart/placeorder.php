@@ -39,6 +39,7 @@
         $pdo->exec($sqlBorrarCarrtio);
     }    
     unset($_SESSION['cart']);
+    header('location: ../usuario.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
